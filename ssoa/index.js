@@ -1,6 +1,6 @@
  
  /**
-  * @file working with Alexa skills 
+  * @file working with alexa skills 
   * @author marx, pellegrini, rottmann
   * @author_url fh-burgenland.at
   * @creation_date 2017-01-14
@@ -113,7 +113,11 @@
                 text += ". The ozone concentration of the last hour is ";
                 text += ozon1h + " micrograms per cubic meter of air. ";
 
-                // there are three levels of ozonze concentration
+                // three levels of ozonze concentration exists
+                // ozone level < 150 means: no danger
+                // ozone level between 150 and 240 means: ozone can cause damage to human health
+                // ozone level > 240 means: danger exists, people should consult their doctor, pharmacist 
+                // or website of umweltbundesamt
                 switch (true) {
                     case (ozon1h < 150):
                         text += "The ozone concentration is very low. " 
@@ -150,7 +154,7 @@
                 // Luckily, we log the error to cloudwatch
                 console.log ( err.toString() );
 
-                // inform the user                
+                // inform the user  
                 text += "Something went wrong while processing the data. ";
                 text += "Please try again later.";
                 
@@ -162,7 +166,6 @@
 };
     
 /*
- * 
  * Speech output and card logging (Alexa App)
  *
  */
@@ -175,7 +178,7 @@ function output( text, context ) {
         },
         card: {
             type: "Simple",
-            title: "JService.io",
+            title: "Ozone concentration",
             content: text
         },
         shouldEndSession: true
