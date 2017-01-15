@@ -1,9 +1,11 @@
  
  /**
-  * @author: marx, pellegrini, rottmann
-  * @author_url: fh-burgenland.at
-  * @creation_date: 2017-01-14
-  * @Description: This code is part of the MCCE Essay "Security analysis of a 
+  * @file working with Alexa skills 
+  * @author marx, pellegrini, rottmann
+  * @author_url fh-burgenland.at
+  * @creation_date 2017-01-14
+  * @version 0.1
+  * @description This code is part of the MCCE Essay "Security analysis of a 
   * Cloud Voice Service of a Smart Connected Product Solution" and represent 
   * a Alexa Skill based on Javascript. 
   * This Alexa Skill connects to a Webservice (hosted by Umweltbundesamt GmbH)
@@ -32,7 +34,7 @@
   * thousands per second.
   * At the time you create a Lambda function you specify a handler, 
   * a function in your code, that AWS Lambda can invoke when the 
-  * service executes your code.
+  * service executes your code. This handler responds to the Alexa Request.
   * 
   * exports.handler:
   * handler - This name must match with the Handler name in the Configuration 
