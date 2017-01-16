@@ -84,7 +84,7 @@ exports.handler = function( event, context ) {
         response.on( 'end', function() {
             
             // remove spaces and invalid elements of the JSON
-            // as Umweltbundesamt uses a invalid JSON format
+            // as Umweltbundesamt uses an invalid JSON format
             data.trim();
             data = data.substring(14, data.length - 5 );
             // we print everything to cloudwatch (amazon's logging console)
