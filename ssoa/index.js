@@ -1,31 +1,40 @@
  
  /**
-  * @file working with alexa skills 
-  * @author marx, pellegrini, rottmann
-  * @author_url fh-burgenland.at
-  * @creation_date 2017-01-14
-  * @version 0.1
-  * @description This code is part of the MCCE Essay "Security analysis of a 
+  * @author: marx, pellegrini, rottmann
+  * @author_url: fh-burgenland.at
+  * @Description: This code is part of the MCCE Essay "Security analysis of a 
   * Cloud Voice Service of a Smart Connected Product Solution" and represent 
   * a Alexa Skill based on Javascript. 
   * This Alexa Skill connects to a Webservice (hosted by Umweltbundesamt GmbH)
   * which provides the ozone concentration at 1010 Vienna, Stephansplatz. 
-  * After parsing the JSON based result of the Webserive, the code generates
-  * the speechtext for the Alexa Voice Service. 
-  *
-  *  This program is free software: you can redistribute it and/or modify
-  *  it under the terms of the GNU General Public License as published by
-  *  the Free Software Foundation, either version 3 of the License, or
-  *  (at your option) any later version.
-  *  
-  *  This program is distributed in the hope that it will be useful,
-  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  *  GNU General Public License for more details.
-  *  You should have received a copy of the GNU General Public License
-  *  along with this program.
+  * After parsing the JSON based result of the Webservice, the code generates
+  * the speechtext for the Alexa Voice Service. In case of an exception, the 
+  * code informs the user about it.
+  * 
+  * The URL of Umweltbundesamt is:
+  * https://luft.umweltbundesamt.at/pub/ozonbericht/aktuell.json
+  * 
+  * Suggestion for improvement:
+  * The IDs of the ozone measuing points are named after places or streets 
+  * which makes it difficult for an user to name them correctly. However, 
+  * the code can be adapted by using a key/value dictionary 
+  * where the key is the name of the city or the state. 
+  * Keep in mind, that some measuring points are not stationary but mobile.
   */
- 
+  
+ /**
+  * This program is free software: you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License as published by
+  * the Free Software Foundation, either version 3 of the License, or
+  * (at your option) any later version.
+  *  
+  * This program is distributed in the hope that it will be useful,
+  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  * GNU General Public License for more details.
+  * You should have received a copy of the GNU General Public License
+  * along with this program.
+  */
  
  /**
   * AWS Lambda is a compute service that lets you run code without 
@@ -34,7 +43,7 @@
   * thousands per second.
   * At the time you create a Lambda function you specify a handler, 
   * a function in your code, that AWS Lambda can invoke when the 
-  * service executes your code. This handler responds to the Alexa Request.
+  * service executes your code.
   * 
   * exports.handler:
   * handler - This name must match with the Handler name in the Configuration 
@@ -47,9 +56,12 @@
   * callback – You can use the optional callback to return information 
   *            to the caller, otherwise return value is null.
   */
-  
- exports.handler = function( event, context ) {
-    
+/////////////////////////////////////////
+// Uncomment the following line 
+// if you want to run script in netbeans
+/////////////////////////////////////////
+exports.handler = function( event, context ) {
+/////////////////////////////////////////
     // to use the https client
     var http = require( 'https' );
  
@@ -88,8 +100,14 @@
                 var i = json.length - 1;
                 var found = false;
                 
-                // we are looking for the id of Stefansplatz 09:STEF
+                // we are searching for the id of Stefansplatz 09:STEF
+                // as content changes constantly.
+                //
+                // other id's are :
                 // Illmitz = 10:ILL1
+                // St. Georgen im Lavanttal = 02:WO35
+                // Wolfsberg Hauptschule = 02:WO15
+                // consult json file if you need more id's
                 while ( (! found) && (i >= 0) )
                 {
                     id = json[i].id;
@@ -113,11 +131,7 @@
                 text += ". The ozone concentration of the last hour is ";
                 text += ozon1h + " micrograms per cubic meter of air. ";
 
-                // three levels of ozonze concentration exists
-                // ozone level < 150 means: no danger
-                // ozone level between 150 and 240 means: ozone can cause damage to human health
-                // ozone level > 240 means: danger exists, people should consult their doctor, pharmacist 
-                // or website of umweltbundesamt
+                // there are three levels of ozonze concentration
                 switch (true) {
                     case (ozon1h < 150):
                         text += "The ozone concentration is very low. " 
@@ -146,29 +160,55 @@
                 console.log ( text );
             
                 // speech and card output
+                /////////////////////////////////////////
+                // Uncomment the following line 
+                // if you want to run script in netbeans
+                /////////////////////////////////////////
                 output( text, context );
-                            
+                /////////////////////////////////////////
             } catch (err) {
                 
                 // Arrgh, something went wrong in the try-block .
                 // Luckily, we log the error to cloudwatch
                 console.log ( err.toString() );
 
-                // inform the user  
+                // inform the user                
                 text += "Something went wrong while processing the data. ";
                 text += "Please try again later.";
                 
+                // speech and card output
+                /////////////////////////////////////////
+                // Uncomment the following line 
+                // if you want to run script in netbeans
+                /////////////////////////////////////////
                 output( text, context );
-            }
-            
-        } );
-    } );
-};
-    
+                /////////////////////////////////////////
+                console.log ( text );
+            } // end catch        
+        } ); // end response
+    } ); // end http.get
+
+/////////////////////////////////////////
+// Uncomment the following line 
+// if you want to run script in netbeans
+/////////////////////////////////////////
+}; // end handler
+/////////////////////////////////////////
+
 /*
- * Speech output and card logging (Alexa App)
- *
+ * @file: speech and text output 
+ * @author: marx, pellegrini, rottmann
+ * @author_url: fh-burgenland.at 
+ * @description: Speech output and card logging (Alexa App)
+ * 
+ * Paramters:
+ * text – Contains the text vor alexa voice service.
+ * context – AWS Lambda uses this parameter to provide runtime information
  */
+/////////////////////////////////////////
+// Uncomment the following function 
+// if you want to run script in netbeans
+/////////////////////////////////////////
 function output( text, context ) {
 
     var response = {
@@ -178,12 +218,13 @@ function output( text, context ) {
         },
         card: {
             type: "Simple",
-            title: "Ozone concentration",
+            title: "JService.io",
             content: text
         },
         shouldEndSession: true
-    };
+    }; // end response
     
-    context.succeed( { response: response } );
-    
-}
+    // send our response to avs
+    context.succeed( { response: response } );    
+} // end output
+/////////////////////////////////////////
