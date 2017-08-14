@@ -1,6 +1,6 @@
  
  /**
-  * @author: marx, pellegrini, rottmann
+  * @author: m, p, r
   * @author_url: fh-burgenland.at
   * @Description: This code is part of the MCCE Essay "Security analysis of a 
   * Cloud Voice Service of a Smart Connected Product Solution" and represent 
